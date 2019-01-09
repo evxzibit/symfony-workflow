@@ -1,4 +1,7 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div class="btn-group" role="group">
+        <button class="btn btn-success">{{ button_label|default('Save') }}</button>
+        {{ include('pull_request/_back_to_list_btn.html.twig') }}
+    </div>
 {{ form_end(form) }}

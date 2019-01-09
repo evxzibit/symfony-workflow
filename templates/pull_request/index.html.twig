@@ -27,7 +27,7 @@
                     {% else %}
                         No actions available.
                     {% endfor %}
-                    <a href="{{ path('pull_request_edit', {'id': pull_request.id}) }}">edit</a>
+                    <a href="{{ path('pull_request_edit', {'id': pull_request.id}) }}" class="btn btn-warning">edit</a>
                 </td>
             </tr>
         {% else %}
