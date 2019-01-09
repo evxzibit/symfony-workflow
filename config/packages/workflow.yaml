@@ -1,0 +1,30 @@
+framework:
+    workflows:
+      user_admin:
+        type: 'workflow'
+        audit_trail:
+          enabled: true #Setting the audit_trail.enabled option to true makes the application generate detailed log messages for the workflow activity.
+        marking_store: #The type (default value single_state) and arguments (default value marking) attributes of the marking_store option are optional. If omitted, their default values will be used.
+          type: 'single_state' #The marking store type could be "multiple_state" or "single_state". A single state marking store does not support a model being on multiple places at the same time.
+          arguments:
+            - 'currentPlace'
+        supports:
+            - App\Entity\User
+        initial_place: inactive
+        places:
+            - inactive
+            - review
+            - rejected
+            - activated
+        transitions:
+          submit_for_review:
+            from: inactive
+            to: review
+          activate:
+            from: review
+            to: activated
+          reject:
+            from: review
+            to: rejected
+
+
