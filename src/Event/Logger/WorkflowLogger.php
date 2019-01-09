@@ -23,13 +23,16 @@ class WorkflowLogger implements EventSubscriberInterface
 
     public function onLeave(Event $event)
     {
+        $classInfo = new \ReflectionClass($event->getSubject());
+        $className = $classInfo->getShortName();
 
         $this->logger->alert(sprintf(
-            'User (id: "%s") performed transaction "%s" from "%s" to "%s"',
-            $event->getSubject()->getId(),
+            'Transaction "%s" from "%s" to "%s" performed on "%s" (id: "%s")',
             $event->getTransition()->getName(),
             implode(', ', array_keys($event->getMarking()->getPlaces())),
-            implode(', ', $event->getTransition()->getTos())
+            implode(', ', $event->getTransition()->getTos()),
+            $className,
+            $event->getSubject()->getId()
         ));
     }
 
