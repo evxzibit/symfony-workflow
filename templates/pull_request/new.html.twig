@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New PullRequest{% endblock %}
+
+{% block body %}
+    <h1>Create new PullRequest</h1>
+
+    {{ include('pull_request/_form.html.twig') }}
+
+    <a href="{{ path('pull_request_index') }}">back to list</a>
+{% endblock %}
