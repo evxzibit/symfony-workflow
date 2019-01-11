@@ -21,6 +21,10 @@
                 <td>{{ pull_request.name }}</td>
                 <td>{{ pull_request.status }}</td>
                 <td>
+                    {% for transaction in workflow_transitions(pull_request) %}
+                        <a href="{{ path('pull_request_flow', {'id': pull_request.id, 'transactionName': transaction.name }) }}" class="btn btn-warning">{{ transaction.name| title }}</a>
+                    {% endfor %}
+
                     <a href="{{ path('pull_request_edit', {'id': pull_request.id}) }}" class="btn btn-warning">edit</a>
                 </td>
             </tr>

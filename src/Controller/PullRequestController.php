@@ -95,4 +95,25 @@ class PullRequestController extends AbstractController
 
         return $this->redirectToRoute('pull_request_index');
     }
+
+    /**
+     * @Route("/{id}/{transactionName}/next_flow", name="pull_request_flow")
+     */
+    public function nextWorkflow(PullRequest $pullRequest, Registry $workflows, $transactionName): Response {
+        $workflow = $workflows->get($pullRequest, 'pull_request');
+
+        if ($workflow->can($pullRequest, $transactionName)) {
+            try {
+                $workflow->apply($pullRequest, $transactionName);
+                $this->getDoctrine()->getManager()->merge($pullRequest);
+                $this->getDoctrine()->getManager()->flush();
+
+                $this->addFlash('success', 'changes submitted');
+            } catch (TransitionException $exception) {
+                //
+            }
+
+            return $this->redirectToRoute('pull_request_index');
+        }
+    }
 }
