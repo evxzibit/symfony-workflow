@@ -21,12 +21,6 @@
                 <td>{{ pull_request.name }}</td>
                 <td>{{ pull_request.status }}</td>
                 <td>
-                    {% for transition in workflow_transitions(pull_request) %}
-                        <a href="{{ path('pull_request_flow', {'id': pull_request.id, 'transitionName':transition.name }) }}"
-                           class="btn btn-primary">{{ transition.name | replace({'_': ' '}) | title }}</a>
-                    {% else %}
-                        No actions available.
-                    {% endfor %}
                     <a href="{{ path('pull_request_edit', {'id': pull_request.id}) }}" class="btn btn-warning">edit</a>
                 </td>
             </tr>

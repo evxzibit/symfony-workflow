@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Workflow\Exception\TransitionException;
 use Symfony\Component\Workflow\Registry;
 
 /**
@@ -86,35 +87,10 @@ class PullRequestController extends AbstractController
      */
     public function delete(Request $request, PullRequest $pullRequest): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$pullRequest->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $pullRequest->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($pullRequest);
             $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('pull_request_index');
-    }
-
-    /**
-     * @Route("/{id}/{transitionName}", name="pull_request_flow")
-     */
-    public function nextFlow(Registry $workflows, PullRequest $pullRequest, string $transitionName): Response
-    {
-        $workflow = $workflows->get($pullRequest, 'pull_request');
-        if ($workflow->can($pullRequest, $transitionName)) {
-            // Update the currentState on the pullRequest
-            try {
-                $workflow->apply($pullRequest, $transitionName);
-
-                $nextStep = array_keys($workflow->getMarking($pullRequest)->getPlaces())[0];
-                $pullRequest->setStatus($nextStep);
-                $this->getDoctrine()->getManager()->merge($pullRequest);
-                $this->getDoctrine()->getManager()->flush();
-                $this->addFlash('success', 'Changes applied successfully');
-
-            } catch (TransitionException $exception) {
-                // ... if the transition is not allowed
-            }
         }
 
         return $this->redirectToRoute('pull_request_index');
