@@ -106,9 +106,6 @@ class UserController extends AbstractController
             // Update the currentState on the post
             try {
                 $workflow->apply($user, $transitionName);
-
-                $nextStep = array_keys($workflow->getMarking($user)->getPlaces())[0];
-                $user->setCurrentPlace($nextStep);
                 $this->getDoctrine()->getManager()->merge($user);
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', 'Changes applied successfully');
