@@ -26,5 +26,42 @@ framework:
           reject:
             from: review
             to: rejected
-
+      pull_request:
+          type: 'state_machine'
+          marking_store:
+            type: 'single_state'
+            arguments:
+              - 'status'
+          supports:
+              - App\Entity\PullRequest
+          initial_place: start
+          places:
+              - start
+              - coding
+              - travis
+              - review
+              - merged
+              - closed
+          transitions:
+              submit:
+                  from: start
+                  to: travis
+              update:
+                  from: [coding, review]
+                  to: travis
+              wait_for_review:
+                  from: travis
+                  to: review
+              request_change:
+                  from: review
+                  to: coding
+              accept:
+                  from: review
+                  to: merged
+              reject:
+                  from: review
+                  to: closed
+              reopen:
+                  from: closed
+                  to: review
 
